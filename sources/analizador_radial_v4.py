@@ -974,11 +974,9 @@ class App(ctk.CTk):
                 while self.ser.in_waiting:
                     raw = self.ser.readline()
                     if raw:
-                        text = raw.decode("utf-8", errors="replace").rstrip(
-                            "\r\n"
-                        )
+                        text = raw.decode("utf-8", errors="replace").rstrip("")
                         if text:
-                            self.log_terminal(f"<< {text}")
+                            self.log_terminal(text)
                             if "G99" in text.upper() and self.g99_sent:
                                 self.set_btn_state(self.start_button, True)
             except Exception as e:
@@ -1011,7 +1009,7 @@ class App(ctk.CTk):
 
     def log_terminal(self, text):
         if hasattr(self, "terminal"):
-            self.terminal.insert("end", text + "\n")
+            self.terminal.insert("end", text)
             self.terminal.see("end")
 
     def clear_terminal(self):
