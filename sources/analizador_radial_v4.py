@@ -59,9 +59,13 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("MeepSlice - CustomTkinter Edition")
-        self.geometry("1020x760")
-        self.minsize(980, 700)
+        width = self.winfo_screenwidth()
+        height = self.winfo_screenheight()
+
+
+        self.title("MipSlice - CustomTkinter Edition")
+        self.geometry(f"{width}x{height-40}+0+0")
+        self.minsize(800, 600)
 
         # Fondo dinámico principal
         self.configure(fg_color=COLOR_BG)
@@ -290,7 +294,7 @@ class App(ctk.CTk):
         ctk.CTkLabel(
             config_box,
             text="0° = derecha • 90° = arriba • 180° = izquierda • 270° = abajo",
-            font=("Segoe UI", 10),
+            font=("Segoe UI", 12),
             text_color=("gray40", "gray75"),
         ).pack(anchor="w", padx=12, pady=(0, 8))
 
@@ -314,7 +318,7 @@ class App(ctk.CTk):
 
         self.btn_send_g99 = ctk.CTkButton(
             action_frame,
-            text="ENVIAR G99",
+            text="ENVIAR DATOS",
             corner_radius=8,
             height=38,
             font=("Segoe UI", 13, "bold"),
@@ -499,7 +503,7 @@ class App(ctk.CTk):
         selectors = ctk.CTkFrame(container, fg_color="transparent")
         selectors.pack(pady=(0, 10))
 
-        ctk.CTkLabel(selectors, text="Paso X/Z:", font=("Segoe UI", 13)).pack(side="left", padx=2)
+        ctk.CTkLabel(selectors, text="Movimiento X/Z:", font=("Segoe UI", 13)).pack(side="left", padx=2)
         self.linear_distance_var = ctk.StringVar(value="1.0")
         ctk.CTkOptionMenu(
             selectors,
@@ -515,7 +519,7 @@ class App(ctk.CTk):
         ).pack(side="left", padx=2)
         ctk.CTkLabel(selectors, text="mm", font=("Segoe UI", 13)).pack(side="left", padx=(0, 10))
 
-        ctk.CTkLabel(selectors, text="Paso Y:", font=("Segoe UI", 13)).pack(side="left", padx=2)
+        ctk.CTkLabel(selectors, text="Rotacion Y:", font=("Segoe UI", 13)).pack(side="left", padx=2)
         self.y_degrees_var = ctk.StringVar(value="10.0°")
         ctk.CTkOptionMenu(
             selectors,
@@ -633,7 +637,7 @@ class App(ctk.CTk):
         # Motor Auxiliar
         self.motor_button = ctk.CTkButton(
             container,
-            text="MOTOR AUXILIAR: OFF",
+            text="MOTOR SIERRA: OFF",
             height=40,
             corner_radius=8,
             fg_color=COLOR_BTN_AUX_OFF,
