@@ -127,7 +127,7 @@ class App(ctk.CTk):
         header.pack(fill="x", padx=15, pady=(10, 5))
 
         title_label = ctk.CTkLabel(
-            header, text="MeepSlicer", font=("Segoe UI", 24, "bold")
+            header, text="MipSlicer", font=("Segoe UI", 24, "bold")
         )
         title_label.pack(side="left")
 
@@ -606,7 +606,7 @@ class App(ctk.CTk):
             text="↷\nHORA",
             command=lambda: self.rotate_y(True),
             **btn_kwargs,
-        ).grid(row=2, column=2, padx=4, pady=4)
+        ).grid(row=0, column=2, padx=4, pady=4)
 
         # Homes individuales
         homes = ctk.CTkFrame(container, fg_color="transparent")
