@@ -32,38 +32,37 @@ El programa utiliza las siguientes librerías de Python:
 La interfaz se divide en dos secciones principales organizadas en pestañas:
 
 1. Pestaña: Análisis CAD
-Cargar DXF: Haz clic en el botón Cargar DXF y selecciona tu archivo .dxf.
+   Cargar DXF: Haz clic en el botón Cargar DXF y selecciona tu archivo .dxf.
 
-Centro y Referencia:
-Haz clic en Detectar centro para encontrar automáticamente la entidad CIRCLE más grande dentro del archivo.
-Si no hay un círculo de referencia, puedes ingresar las coordenadas X e Y manualmente.
-
-Configurar el Análisis:
-Selecciona la Resolución angular deseada (p. ej., 1.0°).
-Elige el sentido de barrido (Antihorario u Horario).
-Ejecutar: Haz clic en ANALIZAR 360°.
-La tabla se llenará con los pares de Ángulo (°) y Distancia (mm).
-
-Enviar G99: Una vez completado el análisis, se habilitará el botón ENVIAR G99. Al presionarlo, el vector de distancias se enviará por la conexión serie activa y te redirigirá a la pestaña de control.
+   Centro y Referencia:
+   Haz clic en Detectar centro para encontrar automáticamente la entidad CIRCLE más grande dentro del archivo.
+   Si no hay un círculo de referencia, puedes ingresar las coordenadas X e Y manualmente.
+   
+   Configurar el Análisis:
+   Selecciona la Resolución angular deseada (p. ej., 1.0°).
+   Elige el sentido de barrido (Antihorario u Horario).
+   Ejecutar: Haz clic en ANALIZAR 360°.
+   La tabla se llenará con los pares de Ángulo (°) y Distancia (mm).
+   
+   Enviar G99: Una vez completado el análisis, se habilitará el botón ENVIAR G99. Al presionarlo, el vector de distancias se enviará    por la conexión serie activa y te redirigirá a la pestaña de control.
 
 2. Pestaña: Control y Terminal
-Conexión Serie:
-Selecciona el Puerto COM de tu dispositivo (ej. Arduino). (Usa el botón Actualizar si no aparece).
-Selecciona el Baudrate (por defecto 115200).
-Presiona CONECTAR.
-
-Panel de Control Manual:
-Configura las magnitudes de paso para los ejes lineales (X/Z) y rotacional (Y).
-Utiliza la cruceta de botones para mover los ejes, ejecutar giros o volver a la posición de origen (HOME).
-Controla el Motor Auxiliar (ON / OFF).
-
-Inicio de Trabajo:
-El botón INICIO se habilitará automáticamente cuando el sistema reciba la confirmación del comando G99 desde el microcontrolador.
-
-Terminal Serie:
-Monitoriza las respuestas recibidas en tiempo real (<<).
-
-Envía comandos en G-Code de forma manual mediante el cuadro de texto inferior (>>).
+   Conexión Serie:
+   Selecciona el Puerto COM de tu dispositivo (ej. Arduino). (Usa el botón Actualizar si no aparece).
+   Selecciona el Baudrate (por defecto 115200).
+   Presiona CONECTAR.
+   
+   Panel de Control Manual:
+   Configura las magnitudes de paso para los ejes lineales (X/Z) y rotacional (Y).
+   Utiliza la cruceta de botones para mover los ejes, ejecutar giros o volver a la posición de origen (HOME).
+   Controla el Motor Auxiliar (ON / OFF).
+   
+   Inicio de Trabajo:
+   El botón INICIO se habilitará automáticamente cuando el sistema reciba la confirmación del comando G99 desde el microcontrolador.
+   
+   Terminal Serie:
+   Monitoriza las respuestas recibidas en tiempo real (<<).
+   Envía comandos en G-Code de forma manual mediante el cuadro de texto inferior (>>).
 
 🎨 Opciones de Apariencia
-Puedes cambiar en cualquier momento entre Modo Oscuro y Modo Claro utilizando el interruptor ubicado en la esquina superior derecha de la aplicación. La interfaz y las tablas adaptarán sus colores dinámicamente.
+Puedes cambiar en cualquier momento entre Modo Oscuro y Modo Claro utilizando el interruptor ubicado en la esquina superior   derecha de la aplicación. La interfaz y las tablas adaptarán sus colores dinámicamente.
