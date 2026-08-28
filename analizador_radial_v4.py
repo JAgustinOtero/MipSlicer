@@ -1,7 +1,7 @@
 """
 Analizador de Perfil Radial CAD + Control Serial V3 (CustomTkinter)
 Jerarquía de paleta personalizada dinámicamente adaptable para Modo Oscuro y Modo Claro.
-"""##
+"""
 
 import math
 import customtkinter as ctk
