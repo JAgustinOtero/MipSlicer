@@ -1,10 +1,13 @@
+#include "Arduino.h"
 #include "string.h"
 #include <Wire.h>
 #include "Motores.h"
 #include "Comandos.h"
 
 #define TOTAL_FILAS 720
-#define DIAMETRO_VARILLA 22
+
+int diametroVarilla = 22;
+int alturaVarilla = 15;
 
 const int FIN_DE_CARRERA_X = 3;
 const int FIN_DE_CARRERA_Z = 2;
@@ -63,6 +66,10 @@ void loop() {
         encabezado = 2;
         numeroTemporal = ""; // Limpiamos por seguridad
       }
+      else if (bufferEncabezado == "G5"){
+        encabezado = 5;
+        numeroTemporal = ""; // Limpiamos por seguridad
+      }
       else if (bufferEncabezado == "S1"){
         encabezado = 3;
         numeroTemporal = ""; // Limpiamos por seguridad
@@ -105,6 +112,9 @@ void loop() {
         break; 
         case 3:
           comandoS1(numeroTemporal);
+        break;
+        case 5:
+          comandoG5(numeroTemporal);
         break;
         case 10:
           inicioPrograma();

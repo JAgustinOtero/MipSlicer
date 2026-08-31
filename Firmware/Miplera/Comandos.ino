@@ -1,6 +1,5 @@
 #include "Comandos.h"
-#define ALTURA_VARILLA 1 //15 aprox.
-#define ALTURA_FUNCIONAMIENTO (ALTURA_VARILLA + DIAMETRO_VARILLA/2 - datos[i])
+#define ALTURA_FUNCIONAMIENTO (alturaVarilla + diametroVarilla/2 - datos[i])
 
 void mostrarDatos(){
   Serial.print("  X:");
@@ -111,6 +110,16 @@ void comandoS1(String comando){
     encenderMotor();
   else if(comando == "OFF")
     apagarMotor();
+}
+
+void comandoG5(String comando)
+{
+  alturaVarilla = posZ;
+  diametroVarilla = comando.toInt();
+  Serial.print("La altura seleccionada es: ");
+  Serial.print(alturaVarilla);
+  Serial.println("mm");
+  Serial.println("diametro de la varilla es: " + comando + "mm");
 }
 
 void comandoHelp(){
