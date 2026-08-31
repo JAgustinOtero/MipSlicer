@@ -79,6 +79,7 @@ class App(ctk.CTk):
         self.serial_reader_running = False
         self.motor_on = False
         self.g99_sent = False
+        self.position_sent = False  # NUEVO: Estado para rastrear si se envió la posición
         self.help_window = None
 
         self.build_ui()
@@ -117,6 +118,13 @@ class App(ctk.CTk):
                 fg_color=COLOR_BTN_DISABLED,
                 hover_color=COLOR_BTN_DISABLED
             )
+
+    def update_start_button_state(self):
+        """NUEVO: Evalúa si se cumplen ambas condiciones para habilitar el botón INICIO."""
+        if self.g99_sent and self.position_sent:
+            self.set_btn_state(self.start_button, True)
+        else:
+            self.set_btn_state(self.start_button, False)
 
     # ============================================================
     # INTERFAZ GRÁFICA (UI)
@@ -194,9 +202,8 @@ class App(ctk.CTk):
         self.help_window.title("Guía de Uso - MipSlice")
         self.help_window.geometry("650x550")
         self.help_window.minsize(500, 400)
-        self.help_window.grab_set()  # Mantiene el foco en la ventana de ayuda
+        self.help_window.grab_set()
 
-        # Título de la ventana
         lbl_title = ctk.CTkLabel(
             self.help_window,
             text="📖 Guía de Uso Básica",
@@ -204,7 +211,6 @@ class App(ctk.CTk):
         )
         lbl_title.pack(padx=20, pady=(15, 10), anchor="w")
 
-        # Caja de texto explicativa
         help_textbox = ctk.CTkTextbox(
             self.help_window,
             font=("Segoe UI", 12),
@@ -224,7 +230,7 @@ class App(ctk.CTk):
             "6. Enviar DATOS: Una vez completado el análisis, se habilitará el botón 'ENVIAR DATOS'. Al presionarlo, el vector de distancias se enviará por la conexión serie activa y te redirigirá a la pestaña de control.\n\n"
             "Pestaña: Control y Terminal\n"
             "7. Enviar Posición: Utiliza los botones en el panel de control para bajar el eje Z hasta que toque con la varilla de madera. Selecciona el diámetro en mm y presiona 'Enviar posicion' para transmitir la posicion y magnitud de la varilla.\n"
-            "8. Inicio de Trabajo: El botón 'INICIO' se habilitará automáticamente cuando el sistema reciba la confirmación del comando G99 desde el microcontrolador.\n"
+            "8. Inicio de Trabajo: El botón 'INICIO' se habilitará automáticamente una vez enviado el comando 'ENVIAR DATOS' (G99) Y presionado el botón 'Enviar posicion'.\n"
             "------------------------ FUNCIONES ADICIONALES ------------------------\n"
             "1. Panel de Control Manual: Configura las magnitudes de paso para los ejes lineales (X/Z) y rotacional (Y). Utiliza la cruceta de botones para mover los ejes, ejecutar giros o volver a la posición de origen (HOME).\n"
             "2. Motor Auxiliar: Activa o desactiva la sierra (S1 ON / S1 OFF).\n"
@@ -813,8 +819,9 @@ class App(ctk.CTk):
             self.results = []
             
             self.set_btn_state(self.btn_send_g99, False)
-            self.set_btn_state(self.start_button, False)
             self.g99_sent = False
+            self.position_sent = False  # NUEVO: Reinicia la bandera al cargar nuevo archivo
+            self.update_start_button_state()  # Deshabilita el botón INICIO
 
             self.file_var.set(path)
             self.detect_circle_center(show_message=False)
@@ -1018,7 +1025,6 @@ class App(ctk.CTk):
             return
 
         if self.send_serial(command):
-            self.g99_sent = True
             self.tabview.set(self.tab_control_name)
 
     # ============================================================
@@ -1080,8 +1086,10 @@ class App(ctk.CTk):
                         text = raw.decode("utf-8", errors="replace").rstrip("")
                         if text:
                             self.log_terminal(text)
-                            if "G99" in text.upper() and self.g99_sent:
-                                self.set_btn_state(self.start_button, True)
+                            # Al recibir la respuesta "G99", marcamos como enviado el vector de datos y evaluamos
+                            if "G99" in text.upper():
+                                self.g99_sent = True
+                                self.update_start_button_state()
             except Exception as e:
                 self.log_terminal(f"[ERROR RX] {e}")
         self.after(30, self.read_serial)
@@ -1108,7 +1116,9 @@ class App(ctk.CTk):
 
     def send_rod_diameter(self):
         val = self.rod_diameter_var.get()
-        self.send_serial(f"G5 {val}")
+        if self.send_serial(f"G5 {val}"):
+            self.position_sent = True  # NUEVO: Marca la bandera como verdadera tras el envío exitoso
+            self.update_start_button_state()  # Re-evalúa el estado del botón INICIO
 
     def send_inicio(self):
         self.send_serial("INICIO")
