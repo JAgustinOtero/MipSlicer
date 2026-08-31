@@ -79,6 +79,7 @@ class App(ctk.CTk):
         self.serial_reader_running = False
         self.motor_on = False
         self.g99_sent = False
+        self.help_window = None
 
         self.build_ui()
         self.refresh_ports()
@@ -130,8 +131,13 @@ class App(ctk.CTk):
         )
         title_label.pack(side="left")
 
+        # Contenedor derecho en el header para los controles
+        header_right = ctk.CTkFrame(header, fg_color="transparent")
+        header_right.pack(side="right")
+
+        # Switch de Modo Oscuro
         self.theme_switch = ctk.CTkSwitch(
-            header,
+            header_right,
             text="Modo Oscuro",
             font=("Segoe UI", 13),
             command=self.toggle_theme,
@@ -141,8 +147,22 @@ class App(ctk.CTk):
             button_color=COLOR_BTN_HOVER,
             button_hover_color=COLOR_BTN_ACTION
         )
-        self.theme_switch.pack(side="right")
+        self.theme_switch.pack(side="left", padx=(0, 10))
         self.theme_switch.select()
+
+        # Botón de Ayuda
+        btn_help = ctk.CTkButton(
+            header_right,
+            text=" help ",
+            width=70,
+            height=28,
+            corner_radius=6,
+            font=("Segoe UI", 12, "bold"),
+            fg_color=COLOR_BTN_ACTION,
+            hover_color=COLOR_BTN_HOVER,
+            command=self.open_help_window
+        )
+        btn_help.pack(side="left")
 
         # Tabs (Pestañas - Ventana General)
         self.tabview = ctk.CTkTabview(
@@ -163,6 +183,56 @@ class App(ctk.CTk):
 
         self.build_analysis_tab()
         self.build_control_tab()
+
+    def open_help_window(self):
+        """Abre o enfoca la ventana emergente con la guía de ayuda."""
+        if self.help_window is not None and self.help_window.winfo_exists():
+            self.help_window.focus()
+            return
+
+        self.help_window = ctk.CTkToplevel(self)
+        self.help_window.title("Guía de Uso - MipSlice")
+        self.help_window.geometry("650x550")
+        self.help_window.minsize(500, 400)
+        self.help_window.grab_set()  # Mantiene el foco en la ventana de ayuda
+
+        # Título de la ventana
+        lbl_title = ctk.CTkLabel(
+            self.help_window,
+            text="📖 Guía de Uso Básica",
+            font=("Segoe UI", 18, "bold")
+        )
+        lbl_title.pack(padx=20, pady=(15, 10), anchor="w")
+
+        # Caja de texto explicativa
+        help_textbox = ctk.CTkTextbox(
+            self.help_window,
+            font=("Segoe UI", 12),
+            corner_radius=8,
+            wrap="word"
+        )
+        help_textbox.pack(fill="both", expand=True, padx=15, pady=(0, 15))
+
+        help_text = (
+            "------------------------ MODO DE USO: --------------------------\n"
+            "--------------------------------------------------\n"
+            "1. Conexión Serie: Selecciona el Puerto COM de tu dispositivo (ej. Arduino). (Usa el botón 'Actualizar' si no aparece). Selecciona el Baudrate (por defecto 115200). Presiona CONECTAR.\n"
+            "2. Cargar DXF: Haz clic en el botón 'Cargar DXF' y selecciona tu archivo .dxf.\n"
+            "3. Centro y Referencia: Haz clic en 'Detectar centro' para encontrar automáticamente la entidad CIRCLE más grande dentro del archivo. Si no hay un círculo de referencia, puedes ingresar las coordenadas X e Y manualmente.\n"
+            "4. Configurar el Análisis: Selecciona la Resolución angular deseada (p. ej., 1.0°). Elige el sentido de barrido (Antihorario u Horario).\n"
+            "5. Ejecutar: Haz clic en 'ANALIZAR 360°'. La tabla se llenará con los pares de Ángulo (°) y Distancia (mm).\n"
+            "6. Enviar DATOS: Una vez completado el análisis, se habilitará el botón 'ENVIAR DATOS'. Al presionarlo, el vector de distancias se enviará por la conexión serie activa y te redirigirá a la pestaña de control.\n\n"
+            "Pestaña: Control y Terminal\n"
+            "7. Enviar Posición: Utiliza los botones en el panel de control para bajar el eje Z hasta que toque con la varilla de madera. Selecciona el diámetro en mm y presiona 'Enviar posicion' para transmitir la posicion y magnitud de la varilla.\n"
+            "8. Inicio de Trabajo: El botón 'INICIO' se habilitará automáticamente cuando el sistema reciba la confirmación del comando G99 desde el microcontrolador.\n"
+            "------------------------ FUNCIONES ADICIONALES ------------------------\n"
+            "1. Panel de Control Manual: Configura las magnitudes de paso para los ejes lineales (X/Z) y rotacional (Y). Utiliza la cruceta de botones para mover los ejes, ejecutar giros o volver a la posición de origen (HOME).\n"
+            "2. Motor Auxiliar: Activa o desactiva la sierra (S1 ON / S1 OFF).\n"
+            "3. Terminal Serie: Monitoriza las respuestas recibidas en tiempo real. Envía comandos en G-Code de forma manual mediante el cuadro de texto inferior."
+        )
+
+        help_textbox.insert("1.0", help_text)
+        help_textbox.configure(state="disabled")
 
     def build_analysis_tab(self):
         tab = self.analysis_tab
@@ -499,7 +569,7 @@ class App(ctk.CTk):
         container.pack(expand=True, pady=10)
 
         # ----------------------------------------------------
-        # NUEVO CONTROL: Diámetro varilla (mm) + Botón Enviar Posición
+        # CONTROL: Diámetro varilla (mm) + Botón Enviar Posición
         # ----------------------------------------------------
         rod_frame = ctk.CTkFrame(container, fg_color="transparent")
         rod_frame.pack(pady=(0, 10))
@@ -1026,7 +1096,6 @@ class App(ctk.CTk):
         try:
             self.ser.write((command + "\n").encode("ascii"))
             self.ser.flush()
-            # self.log_terminal(f">> {command}")
             return True
         except Exception as e:
             self.log_terminal(f"[ERROR TX] {e}")
