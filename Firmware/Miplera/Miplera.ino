@@ -74,8 +74,8 @@ void loop() {
         encabezado = 3;
         numeroTemporal = ""; // Limpiamos por seguridad
       }
-      else if (bufferEncabezado == "INICIO"){
-        encabezado = 10;
+      else if (bufferEncabezado == "G80"){
+        encabezado = 80;
         numeroTemporal = ""; // Limpiamos por seguridad
       }
       // Si el búfer se llena con texto incorrecto (ej. "G98" o basura), se reinicia el filtro
@@ -101,7 +101,6 @@ void loop() {
       cargaCompleta = true;
       switch(encabezado){
         case 0:
-
           comandoG0(numeroTemporal);
         break;
         case 1:
@@ -116,7 +115,7 @@ void loop() {
         case 5:
           comandoG5(numeroTemporal);
         break;
-        case 10:
+        case 80:
           inicioPrograma();
         break;
       }
