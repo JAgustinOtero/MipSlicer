@@ -6,6 +6,8 @@
 
 #define TOTAL_FILAS 720
 
+int cantidadDatos = 0;
+
 int diametroVarilla = 22;
 int alturaVarilla = 15;
 
@@ -173,6 +175,7 @@ void mostrarDatosLeidos() {
     } else if (i == 5) {
       Serial.println("... [Datos intermedios ocultos para no saturar la pantalla] ...");
     }
+    cantidadDatos = i+1;
   }
   
   indiceActual = 0;

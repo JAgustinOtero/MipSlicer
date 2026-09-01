@@ -137,21 +137,21 @@ void inicioPrograma(){
   posY = 0;
   posM = 0;
   /* INICIO DE CORTE*/
-  origenMotor(X,FIN_DE_CARRERA_X);
   origenMotor(Z,FIN_DE_CARRERA_Z);
+  origenMotor(X,FIN_DE_CARRERA_X);
   mostrarDatos();
   encenderMotor();
-  for(int i=0;i<TOTAL_FILAS;i++){
-    girarMotorPap(Z,!(HOME_Z),ALTURA_FUNCIONAMIENTO,VELOCIDAD_FUNC_Z);
+  for(int i=0;i<cantidadDatos;i++){
+    girarMotorPap(Z,!(HOME_Z),ALTURA_FUNCIONAMIENTO,VELOCIDAD_FUNC_Z); //baja eje Z
     posY = ALTURA_FUNCIONAMIENTO;
-    mostrarDatos();
-    girarMotorPap(X,sentido,MAXIMO_X,VELOCIDAD_FUNC_X);
-    posX = MAXIMO_X*(int)!sentido;
+    girarMotorPap(X,!(HOME_X),MAXIMO_X,VELOCIDAD_FUNC_X/2); //corta
     sentido = !sentido;
-    girarMotorPap(Z,(HOME_Z),ALTURA_FUNCIONAMIENTO,VELOCIDAD_FUNC_Z);
+    girarMotorPap(Z,(HOME_Z),ALTURA_FUNCIONAMIENTO,VELOCIDAD_FUNC_Z);//sube eje Z
     posZ = 0;
-    girarMotorPap(Y,true,((double)1/TOTAL_FILAS),VELOCIDAD_FUNC_Y);
-    posY = posY + 1;
+    girarMotorPap(X,(HOME_X),MAXIMO_X,VELOCIDAD_FUNC_X); //vuelve
+    sentido = !sentido;
+    girarMotorPap(Y,true,((double)1/cantidadDatos),VELOCIDAD_FUNC_Y); //gira
+    posY = posY + 360/cantidadDatos;
   }
   apagarMotor();
   origenMotor(X,FIN_DE_CARRERA_X);
